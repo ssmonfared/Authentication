@@ -65,6 +65,6 @@ app.use(function(req, res) {
 
 app.listen(3000);
 
-console.log(' RESTful API server started on: ' + port);
+console.log(' API server started on: ' + port);
 
 module.exports = app;
