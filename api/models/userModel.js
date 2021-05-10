@@ -28,8 +28,7 @@ var UserSchema = new Schema({
     default: Date.now
   },
   isAdmin: {
-    type: Boolean,
-    default: false
+    type: String
   },
   adminPassword: {
     type: String

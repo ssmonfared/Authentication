@@ -9,10 +9,10 @@ exports.register = function(req, res) {
 
       var newUser = new User(req.body);
       newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
-      if (req.body.isAdmin == true && req.body.adminPassword == "123"){
-        newUser.isAdmin = true
+      if (req.body.isAdmin === 'admin' && req.body.adminPassword === '123'){
+        newUser.isAdmin = 'admin'
       } else{
-        newUser.isAdmin = false
+        newUser.isAdmin = 'client'
       }
       newUser.save(function(err, user) {
         if (err) {
@@ -54,7 +54,13 @@ exports.loginRequired = function(req, res, next) {
 };
 exports.profile = function(req, res, next) {
   if (req.user) {
-    res.send(req.user);
+    //res.send(req.user);
+    console.log(req.user.isAdmin === 'admin')
+    if (req.user.isAdmin === 'admin'){
+      return res.json({message: 'Hello Admin'})
+    } else {
+      return res.json({message: 'Hello Client'})
+    }
     next();
   } 
   else {
