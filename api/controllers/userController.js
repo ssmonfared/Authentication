@@ -6,7 +6,29 @@ var mongoose = require('mongoose'),
   User = mongoose.model('User');
 
 exports.register = function(req, res) {
-  var newUser = new User(req.body);
+
+  if (req.body.isAdmin == True){
+
+    if (req.body.adminPassword == "123"){
+      var newUser = new User(req.body);
+  
+      newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
+      newUser.save(function(err, user) {
+        if (err) {
+          return res.status(400).send({
+            message: err
+          });
+        } else {
+          user.hash_password = undefined;
+          return res.json(user);
+          //res.redirect('/auth/sign_in')
+        }
+      });
+    }
+    
+  }
+  else{
+    var newUser = new User(req.body);
   
   newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
   newUser.save(function(err, user) {
@@ -20,6 +42,10 @@ exports.register = function(req, res) {
       //res.redirect('/auth/sign_in')
     }
   });
+  }
+  
+
+
 };
 
 
