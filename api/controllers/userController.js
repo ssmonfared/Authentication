@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
 
 exports.register = function(req, res) {
 
-  if (req.body.isAdmin == True){
+  if (req.body.isAdmin == true){
 
     if (req.body.adminPassword == "123"){
       var newUser = new User(req.body);
