@@ -7,12 +7,13 @@ var mongoose = require('mongoose'),
 
 exports.register = function(req, res) {
 
-  if (req.body.isAdmin == true){
-
-    if (req.body.adminPassword == "123"){
       var newUser = new User(req.body);
-  
       newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
+      if (req.body.isAdmin == true && req.body.adminPassword == "123"){
+        newUser.isAdmin = true
+      } else{
+        newUser.isAdmin = false
+      }
       newUser.save(function(err, user) {
         if (err) {
           return res.status(400).send({
@@ -24,28 +25,6 @@ exports.register = function(req, res) {
           //res.redirect('/auth/sign_in')
         }
       });
-    }
-    
-  }
-  else{
-    var newUser = new User(req.body);
-  
-  newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
-  newUser.save(function(err, user) {
-    if (err) {
-      return res.status(400).send({
-        message: err
-      });
-    } else {
-      user.hash_password = undefined;
-      return res.json(user);
-      //res.redirect('/auth/sign_in')
-    }
-  });
-  }
-  
-
-
 };
 
 
@@ -56,10 +35,9 @@ exports.sign_in = function(req, res) {
     if (err) throw err;
     if (!user || !user.comparePassword(req.body.password)) {
       return res.status(401).json({ message: 'Authentication failed. Invalid user or password.' });
-    }  
-    return res.json({ token: jwt.sign({ email: user.email, fullName: user.fullName, _id: user._id }, 'RESTFULAPIs') });
-    
-    res.header = { authorization: jwt.sign({ email: user.email, fullName: user.fullName, _id: user._id }, 'RESTFULAPIs')};
+    }
+    return res.json({ token: jwt.sign({ email: user.email, fullName: user.fullName, _id: user._id, isAdmin: user.isAdmin }, 'RESTFULAPIs') });
+    //res.header = { authorization: jwt.sign({ email: user.email, fullName: user.fullName, _id: user._id }, 'RESTFULAPIs')};
     //res.redirect('/profile')
   });
 };
